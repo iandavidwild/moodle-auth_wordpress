@@ -1,0 +1,33 @@
+<?php
+
+// Set to defaults if undefined
+if (!isset($config->wordpress_root)) {
+    $config->wordpress_root = '';
+}
+
+?>
+
+<table cellspacing="0" cellpadding="5" border="0">
+<tr>
+   <td colspan="2">
+       <h4><?php print_string('wordpress_settings', 'auth_wordpress') ?></h4>
+   </td>
+</tr>
+<tr valign="top" class="required">
+    <td align="right">
+        <label for="wordpress_root"><?php print_string('wordpress_root', 'auth_wordpress') ?></label>
+    </td>
+    <td>
+        <input id="wordpress_root" name="wordpress_root" type="text" value="<?php echo $config->wordpress_root ?>" />
+        <?php if (isset($err['wordpress_root'])) { echo $OUTPUT->error_text($err['wordpress_root']); } ?>
+    </td>
+    <td>
+        <?php print_string('wordpress_root_help', 'auth_wordpress') ?>
+    </td>
+</tr>
+<?php
+
+print_auth_lock_options($this->authtype, $user_fields, get_string('auth_fieldlocks_help', 'auth'), false, false);
+
+?>
+</table>
