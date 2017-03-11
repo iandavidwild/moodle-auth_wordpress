@@ -267,9 +267,12 @@ class BasicOAuth {
     }
 
     curl_setopt($ci, CURLOPT_VERBOSE, TRUE);
-    $log = fopen('/tmp/connections.log', 'a');
-    fwrite($log, sprintf("\n[%s]\n\n", date('Y-m-d H:i:s')));
-    curl_setopt($ci, CURLOPT_STDERR, $log);
+
+// TODO: Output to Moodle log
+    
+//    $log = fopen('/tmp/connections.log', 'a');
+//    fwrite($log, sprintf("\n[%s]\n\n", date('Y-m-d H:i:s')));
+//    curl_setopt($ci, CURLOPT_STDERR, $log);
 
     curl_setopt($ci, CURLOPT_URL, $url);
     $response = curl_exec($ci);
@@ -277,7 +280,7 @@ class BasicOAuth {
     $this->http_info = array_merge($this->http_info, curl_getinfo($ci));
     $this->url = $url;
     curl_close ($ci);
-    fclose($log);
+//    fclose($log);
     return $response;
   }
 
