@@ -26,5 +26,11 @@ $string['auth_wordpressdescription'] = 'Users are authenticated against a WordPr
 $string['pluginname'] = 'WordPress authentication';
 
 $string['wordpress_settings'] = 'WordPress settings';
-$string['wordpress_root'] = 'Path (on this server) of your WordPress installation';
-$string['wordpress_root_help'] = 'The path to your WordPress installation could be absolute or relative';
+$string['wordpress_host'] = 'The URL of your WordPress installation';
+$string['wordpress_host_help'] = 'Please specify the full URL, e.g. https://mywordpress.me Trailing slashes are ignored.';
+
+$string['client_key'] = 'The OAuth 1.0a client key';
+$string['client_key_help'] = 'This will need to be provided by the whoever configured the client at the WordPress end.';
+
+$string['client_secret'] = 'The OAuth 1.0a client secret';
+$string['client_secret_help'] = 'This will need to be provided by the whoever configured the client at the WordPress end.';
