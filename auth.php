@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Authenticates against a WordPress installed on the same server.
+ * Authenticates against a WordPress installation using OAuth 1.0a.
  *
  * @package auth_wordpress
  * @author Ian Wild
@@ -25,7 +25,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/authlib.php');
+require_once($CFG->dirroot . '/auth/wordpress/Oauth.php');
+require_once($CFG->dirroot . '/auth/wordpress/BasicOauth.php');
 
+use \OAuth1\BasicOauth;
+ 
 /**
  * Plugin for WordPress authentication.
  */
@@ -150,47 +154,90 @@ class auth_plugin_wordpress extends auth_plugin_base {
      * Processes and stores configuration data for this authentication plugin.
      */
     function process_config($config) {
+        // Set to defaults if undefined
+        if (!isset($config->wordpress_host)) {
+            $config->wordpress_host = '';
+        }
+        if (!isset($config->client_key)) {
+            $config->client_key = '';
+        }
+        if (!isset($config->client_secret)) {
+            $config->client_secret = '';
+        }
+        set_config('wordpress_host', trim($config->wordpress_host), 'auth/wordpress');
+        set_config('client_key', trim($config->client_key), 'auth/wordpress');
+        set_config('client_secret', trim($config->client_secret), 'auth/wordpress');
+        
         return true;
     }
     
     /**
-     * Will get called before the login page is shownr. Ff NTLM SSO
-     * is enabled, and the user is in the right network, we'll redirect
-     * to the magic NTLM page for SSO...
+     * Will get called before the login page is shown. 
      *
      */
     function loginpage_hook() {
-        define( 'WP_USE_THEMES', false ); // Do not use the theme files
-        define( 'COOKIE_DOMAIN', false ); // Do not append verify the domain to the cookie
-        define( 'DISABLE_WP_CRON', true ); // We don't want extra things running...
-        
-        // URL/blog you want to auth to.
-        
-        // Path (absolute or relative) to where your WP core is running
-        require($this->config->wordpress . "/wp-load.php");
-                
-        if ( !is_user_logged_in() ) {
+        global $CFG;    
+    
+        $client_key = $this->config->client_key;
+        $client_secret = $this->config->client_secret;
+        $wordpress_host = $this->config->wordpress_host;
+       
+        if( (strlen($wordpress_host) > 0) && (strlen($client_key) > 0) && (strlen($client_secret) > 0) ) {
+            // kick ff the authentication process
+            $connection = new BasicOAuth($client_key, $client_secret);
+       
+            // strip the trailing slashes from the end of the host URL to avoid any confusion (and to make the code easier to read)
+            $wordpress_host = rtrim($wordpress_host, '/');
             
-            // Redirect them to the WordPress login page
-            auth_redirect();
-            
-            if ( is_wp_error( $user ) ) {
-                echo $user->get_error_message();
-            } else {
-                wp_set_auth_cookie( $user->ID, true );
-            }
-        }
+            $connection->host = $wordpress_host . "/wp-json";
+            $connection->requestTokenURL = $wordpress_host . "/oauth1/request";
+       
+            $callback = $CFG->wwwroot . '/auth/wordpress/callback.php';
+            $tempCredentials = $connection->getRequestToken($callback);
+       
+            $_SESSION['oauth_token'] = $tempCredentials['oauth_token'];
+            $_SESSION['oauth_token_secret'] = $tempCredentials['oauth_token_secret'];
+       
+            $connection->authorizeURL = $wordpress_host . "/oauth1/authorize";
+       
+            $redirect_url = $connection->getAuthorizeURL($tempCredentials);
+       
+            header('Location: ' . $redirect_url);
+            die;
+        }// if   
+    }
+    
+    /**
+     * 
+     */
+    function oauth_callback() {
+        global $CFG, $DB;
         
-        // Get user details 
-        $user = wp_get_current_user();
+        $client_key = $this->config->client_key;
+        $client_secret = $this->config->client_secret;
+        $wordpress_host = $this->config->wordpress_host;
         
-        if ( !is_wp_error( $user ) ) {
-            // Record this enrolment in the Moodle database 
-           
-         
-        }
+        // strip the trailing slashes from the end of the host URL to avoid any confusion (and to make the code easier to read)
+        $wordpress_host = rtrim($wordpress_host, '/');
+        
+        session_start();
+        
+        // at this stage we have been provided with new permanent token
+        $connection = new BasicOAuth($client_key, $client_secret, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
+        
+        $connection->host = $wordpress_host . "/wp-json";
+        
+        $connection->accessTokenURL = $wordpress_host . "/oauth1/access";
+        
+        $tokenCredentials = $connection->getAccessToken($_REQUEST['oauth_verifier']);
+        
+        $perm_connection = new BasicOAuth($client_key, $client_secret, $tokenCredentials['oauth_token'],
+                $tokenCredentials['oauth_token_secret']);
+        
+        $account = $perm_connection->get($wordpress_host . '/wp-json/wp/v2/users/me');
+        
+        // do something with this account
+    
     }
 
 }
-
-
