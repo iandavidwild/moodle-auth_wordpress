@@ -1,8 +1,14 @@
 <?php
 
 // Set to defaults if undefined
-if (!isset($config->wordpress_root)) {
-    $config->wordpress_root = '';
+if (!isset($config->wordpress_host)) {
+    $config->wordpress_host = '';
+}
+if (!isset($config->client_key)) {
+    $config->client_key = '';
+}
+if (!isset($config->client_secret)) {
+    $config->client_secret = '';
 }
 
 ?>
@@ -15,14 +21,38 @@ if (!isset($config->wordpress_root)) {
 </tr>
 <tr valign="top" class="required">
     <td align="right">
-        <label for="wordpress_root"><?php print_string('wordpress_root', 'auth_wordpress') ?></label>
+        <label for="wordpress_host"><?php print_string('wordpress_host', 'auth_wordpress') ?></label>
     </td>
     <td>
-        <input id="wordpress_root" name="wordpress_root" type="text" value="<?php echo $config->wordpress_root ?>" />
-        <?php if (isset($err['wordpress_root'])) { echo $OUTPUT->error_text($err['wordpress_root']); } ?>
+        <input id="wordpress_host" name="wordpress_host" type="text" value="<?php echo $config->wordpress_host ?>" />
+        <?php if (isset($err['wordpress_host'])) { echo $OUTPUT->error_text($err['wordpress_host']); } ?>
     </td>
     <td>
-        <?php print_string('wordpress_root_help', 'auth_wordpress') ?>
+        <?php print_string('wordpress_host_help', 'auth_wordpress') ?>
+    </td>
+</tr>
+<tr valign="top" class="required">
+    <td align="right">
+        <label for="client_key"><?php print_string('client_key', 'auth_wordpress') ?></label>
+    </td>
+    <td>
+        <input id="client_key" name="client_key" type="text" value="<?php echo $config->client_key ?>" />
+        <?php if (isset($err['client_key'])) { echo $OUTPUT->error_text($err['client_key']); } ?>
+    </td>
+    <td>
+        <?php print_string('client_key_help', 'auth_wordpress') ?>
+    </td>
+</tr>
+<tr valign="top" class="required">
+    <td align="right">
+        <label for="client_secret"><?php print_string('client_secret', 'auth_wordpress') ?></label>
+    </td>
+    <td>
+        <input id="client_secret" name="client_secret" type="text" value="<?php echo $config->client_secret ?>" />
+        <?php if (isset($err['client_secret'])) { echo $OUTPUT->error_text($err['client_secret']); } ?>
+    </td>
+    <td>
+        <?php print_string('client_secret_help', 'auth_wordpress') ?>
     </td>
 </tr>
 <?php
