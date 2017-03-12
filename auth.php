@@ -97,7 +97,7 @@ class auth_plugin_wordpress extends auth_plugin_base {
      * @return bool
      */
     function is_internal() {
-        return true;
+        return false;
     }
 
     /**
@@ -107,7 +107,7 @@ class auth_plugin_wordpress extends auth_plugin_base {
      * @return bool
      */
     function can_change_password() {
-        return true;
+        return false;
     }
 
     /**
@@ -126,7 +126,7 @@ class auth_plugin_wordpress extends auth_plugin_base {
      * @return bool
      */
     function can_reset_password() {
-        return true;
+        return false;
     }
 
     /**
