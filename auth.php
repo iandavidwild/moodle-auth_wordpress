@@ -220,8 +220,6 @@ class auth_plugin_wordpress extends auth_plugin_base {
         // strip the trailing slashes from the end of the host URL to avoid any confusion (and to make the code easier to read)
         $wordpress_host = rtrim($wordpress_host, '/');
         
-        session_start();
-        
         // at this stage we have been provided with new permanent token
         $connection = new BasicOAuth($client_key, $client_secret, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
         
@@ -231,13 +229,20 @@ class auth_plugin_wordpress extends auth_plugin_base {
         
         $tokenCredentials = $connection->getAccessToken($_REQUEST['oauth_verifier']);
         
-        $perm_connection = new BasicOAuth($client_key, $client_secret, $tokenCredentials['oauth_token'],
-                $tokenCredentials['oauth_token_secret']);
+        if(isset($tokenCredentials['oauth_token']) && isset($tokenCredentials['oauth_token_secret'])) {
         
-        $account = $perm_connection->get($wordpress_host . '/wp-json/wp/v2/users/me');
-        
-        // do something with this account
-    
+            $perm_connection = new BasicOAuth($client_key, $client_secret, $tokenCredentials['oauth_token'],
+                    $tokenCredentials['oauth_token_secret']);
+            
+            $account = $perm_connection->get($wordpress_host . '/wp-json/wp/v2/users/me?context=edit');
+            
+            if(isset($account)) {
+                // check to determine if a user has already been created...
+                
+            
+               
+            }
+        }
     }
 
 }
