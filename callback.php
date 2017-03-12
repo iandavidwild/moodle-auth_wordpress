@@ -24,7 +24,7 @@
 
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/auth/wordpress/lib.php');
+require_once($CFG->dirroot . '/auth/wordpress/auth.php');
 
 defined('MOODLE_INTERNAL') || die();
 
