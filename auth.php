@@ -63,10 +63,10 @@ class auth_plugin_wordpress extends auth_plugin_base {
      */
     function user_login ($username, $password) {
         global $CFG, $DB;
-        if ($user = $DB->get_record('user', array('username'=>$username, 'mnethostid'=>$CFG->mnet_localhost_id))) {
-            return validate_internal_user_password($user, $password);
+        if ($user = $DB->get_record('user', array('username'=>$username, 'mnethostid'=>$CFG->mnet_localhost_id, 'auth'=>'wordpress'))) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -88,7 +88,7 @@ class auth_plugin_wordpress extends auth_plugin_base {
     }
 
     function prevent_local_passwords() {
-        return false;
+        return true;
     }
 
     /**
@@ -211,7 +211,7 @@ class auth_plugin_wordpress extends auth_plugin_base {
      * 
      */
     function oauth_callback() {
-        global $CFG, $DB;
+        global $CFG, $DB, $SESSION;
         
         $client_key = $this->config->client_key;
         $client_secret = $this->config->client_secret;
@@ -237,10 +237,66 @@ class auth_plugin_wordpress extends auth_plugin_base {
             $account = $perm_connection->get($wordpress_host . '/wp-json/wp/v2/users/me?context=edit');
             
             if(isset($account)) {
-                // check to determine if a user has already been created...
+                // firstly make sure there isn't an email collision:
+                if($user = $DB->get_record('user', array('email'=>$account->email))) {
+                    if($user->auth != 'wordpress') {
+                        print_error('usercollision','auth_wordpress');
+                    }
+                }
                 
-            
-               
+                // check to determine if a user has already been created...     
+                if($user = authenticate_user_login($account->username, $account->username)) {
+                    // TODO update the current user with the latest first name and last name pulled from WordPress?
+        
+                    if (user_not_fully_set_up($user, false)) {
+                        $urltogo = $CFG->wwwroot.'/user/edit.php?id='.$user->id.'&amp;course='.SITEID;
+                        // We don't delete $SESSION->wantsurl yet, so we get there later
+        
+                    }
+                } else {
+                    
+                    
+                    require_once($CFG->dirroot . '/user/lib.php');
+                    
+                    // we need to configure a new user account
+                    $user = new stdClass();
+                    
+                    $user->mnethostid = $CFG->mnet_localhost_id;
+                    $user->confirmed = 1;
+                    $user->username = $account->username;
+                    $user->password = AUTH_PASSWORD_NOT_CACHED;
+                    $user->firstname = $account->first_name;
+                    $user->lastname = $account->last_name;
+                    $user->email = $account->email;
+                    $user->description = $account->description;
+                    $user->auth = 'wordpress';
+                    
+                    $id = user_create_user($user, false);
+                    
+                    $user = $DB->get_record('user', array('id'=>$id));
+                }
+                
+                complete_user_login($user);
+                
+                if (isset($SESSION->wantsurl) and (strpos($SESSION->wantsurl, $CFG->wwwroot) === 0)) {
+                    $urltogo = $SESSION->wantsurl;    /// Because it's an address in this site
+                    unset($SESSION->wantsurl);
+                
+                } else {
+                    $urltogo = $CFG->wwwroot.'/';      /// Go to the standard home page
+                    unset($SESSION->wantsurl);         /// Just in case
+                }
+                
+                /// Go to my-moodle page instead of homepage if defaulthomepage enabled
+                if (!has_capability('moodle/site:config',context_system::instance()) and !empty($CFG->defaulthomepage) && $CFG->defaulthomepage == HOMEPAGE_MY and !isguestuser()) {
+                    if ($urltogo == $CFG->wwwroot or $urltogo == $CFG->wwwroot.'/' or $urltogo == $CFG->wwwroot.'/index.php') {
+                        $urltogo = $CFG->wwwroot.'/my/';
+                    }
+                }
+                
+                redirect($urltogo);
+                
+                exit;
             }
         }
     }
