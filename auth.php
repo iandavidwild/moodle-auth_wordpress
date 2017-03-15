@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/authlib.php');
-require_once($CFG->dirroot . '/auth/wordpress/Oauth.php');
-require_once($CFG->dirroot . '/auth/wordpress/BasicOauth.php');
+require_once($CFG->dirroot . '/auth/wordpress/OAuth.php');
+require_once($CFG->dirroot . '/auth/wordpress/BasicOAuth.php');
 
 use \OAuth1\BasicOauth;
  
@@ -178,6 +178,10 @@ class auth_plugin_wordpress extends auth_plugin_base {
     function loginpage_hook() {
         global $CFG;    
     
+        if(isset($CFG->disablewordpressauth) && ($CFG->disablewordpressauth == true)) {
+            return;
+        }
+        
         $client_key = $this->config->client_key;
         $client_secret = $this->config->client_secret;
         $wordpress_host = $this->config->wordpress_host;
@@ -240,7 +244,7 @@ class auth_plugin_wordpress extends auth_plugin_base {
                 // firstly make sure there isn't an email collision:
                 if($user = $DB->get_record('user', array('email'=>$account->email))) {
                     if($user->auth != 'wordpress') {
-                        print_error('usercollision','auth_wordpress');
+                        print_error('usercollision', 'auth_wordpress');
                     }
                 }
                 
