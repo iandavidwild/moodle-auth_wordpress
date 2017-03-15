@@ -28,6 +28,11 @@ require_once($CFG->dirroot . '/auth/wordpress/auth.php');
 
 defined('MOODLE_INTERNAL') || die();
 
+// checks to ensure that we have come here via WordPress...
+if(!isset($_REQUEST['oauth_verifier'])) {
+    print_error('missingverifier', 'auth_wordpress');
+}
+
 // get the wordpress plugin instance
 
 $authplugin = get_auth_plugin('wordpress');
