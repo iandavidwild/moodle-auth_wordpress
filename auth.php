@@ -87,6 +87,15 @@ class auth_plugin_wordpress extends auth_plugin_base {
         return update_internal_user_password($user, $newpassword);
     }
 
+    /**
+     * Returns true if this authentication plugin doesn't support local passwords -  which we don't so we 
+     * store 'not_cached' in the user table.
+     * 
+     * {@inheritDoc}
+     * @see auth_plugin_base::prevent_local_passwords()
+     * 
+     * return bool
+     */
     function prevent_local_passwords() {
         return true;
     }
@@ -152,6 +161,8 @@ class auth_plugin_wordpress extends auth_plugin_base {
 
     /**
      * Processes and stores configuration data for this authentication plugin.
+     * 
+     * @return @bool
      */
     function process_config($config) {
         // Set to defaults if undefined
@@ -212,9 +223,11 @@ class auth_plugin_wordpress extends auth_plugin_base {
     }
     
     /**
+     * Called externally as the third and final leg of three legged authentication. This function performs the final
+     * Moodle authentication. 
      * 
      */
-    function oauth_callback() {
+    function callback_handler() {
         global $CFG, $DB, $SESSION;
         
         $client_key = $this->config->client_key;
