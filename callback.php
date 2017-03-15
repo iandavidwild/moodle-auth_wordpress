@@ -22,7 +22,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
-
 require_once('../../config.php');
 require_once($CFG->dirroot . '/auth/wordpress/auth.php');
 
@@ -38,6 +37,8 @@ if(!isset($_REQUEST['oauth_verifier'])) {
 $authplugin = get_auth_plugin('wordpress');
 
 if(isset($authplugin)) {
-    $authplugin->oauth_callback();
+    
+    // call the callback handler
+    $authplugin->callback_handler();
 }
 
