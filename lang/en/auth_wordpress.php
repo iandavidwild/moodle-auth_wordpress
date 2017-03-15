@@ -36,3 +36,5 @@ $string['client_secret'] = 'The OAuth 1.0a client secret';
 $string['client_secret_help'] = 'This will need to be provided by the whoever configured the client at the WordPress end.';
 
 $string['auth_collision'] = 'A user account with the same email address exists on this platform but is authenticated using an alternative method';
+
+$string['missingverifier'] = 'OAuth verifier missing';
