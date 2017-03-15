@@ -14,5 +14,3 @@ Then add auth/wordpress to your gitignore.
 
 ## Credits
 Maintainer: Ian Wild (ian[dot]wild[at]heavy-horse[dot]co[dot]uk)
-  
-Original lightboxgallery plugin: Paul Holden (pholden[at]greenhead[dot]ac[dot]uk)  
