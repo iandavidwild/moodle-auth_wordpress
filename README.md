@@ -15,4 +15,4 @@ Then add auth/wordpress to your gitignore.
 ## Credits
 Maintainer: Ian Wild (ian[dot]wild[at]heavy-horse[dot]co[dot]uk)
 
-Utilises the OAuth library developed by Abraham Williams (abraham[at]abrah[dot]am)
+Utilises the twitteroauth OAuth library developed by Abraham Williams (abraham[at]abrah[dot]am)
