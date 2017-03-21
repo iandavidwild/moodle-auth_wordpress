@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['auth_wordpressdescription'] = 'Users are authenticated against a WordPress installed on the same server.  Be careful using this option - think of the security and administration problems this could cause.';
+$string['auth_wordpressdescription'] = 'Users are logged in via WordPress using delegated OAuth 1.0a three legged authentication.';
 $string['pluginname'] = 'WordPress authentication';
 
 $string['wordpress_settings'] = 'WordPress settings';
