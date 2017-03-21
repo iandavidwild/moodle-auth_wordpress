@@ -271,8 +271,6 @@ class auth_plugin_wordpress extends auth_plugin_base {
         
                     }
                 } else {
-                    
-                    
                     require_once($CFG->dirroot . '/user/lib.php');
                     
                     // we need to configure a new user account
