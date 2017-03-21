@@ -193,6 +193,11 @@ class auth_plugin_wordpress extends auth_plugin_base {
             return;
         }
         
+        // Only authenticate against WordPress if the user has clicked on a link to a protected resource
+        if(!isset($SESSION->wantsurl)) {
+            return;
+        }
+        
         $client_key = $this->config->client_key;
         $client_secret = $this->config->client_secret;
         $wordpress_host = $this->config->wordpress_host;
