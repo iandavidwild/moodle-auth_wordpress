@@ -8,7 +8,7 @@ You can download a zip of this module from: https://github.com/iandavidwild/mood
 Unzip it to your auth/ folder and rename the extracted folder to 'wordpress'.
 ### Using Git
 To install using git, run the following command from the root of your moodle installation:  
-git clone git://github.com/iandavidwild/moodle-auth_wordpress.git mod/wordpress  
+git clone git://github.com/iandavidwild/moodle-auth_wordpress.git auth/wordpress  
 
 Then add auth/wordpress to your gitignore.
 
