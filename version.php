@@ -18,14 +18,14 @@
  * Version information
  *
  * @package    auth_wordpress
- * @copyright  2017 Ian Wild (http://skodak.org)
+ * @copyright  2017 Ian Wild
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2017031101;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version   = 2017051201;        // The current plugin version (Date: YYYYMMDDXX)
 $plugin->requires  = 2016051900;        // Requires this Moodle version
 $plugin->component = 'auth_wordpress';  // Full name of the plugin (used for diagnostics)
-$plugin->maturity = MATURITY_ALPHA;
+$plugin->maturity = MATURITY_BETA;
 $plugin->release = '0.0.0.1';
