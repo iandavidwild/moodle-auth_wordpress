@@ -187,7 +187,7 @@ class auth_plugin_wordpress extends auth_plugin_base {
      *
      */
     function loginpage_hook() {
-        global $CFG;    
+        global $CFG, $SESSION;    
     
         if(isset($CFG->disablewordpressauth) && ($CFG->disablewordpressauth == true)) {
             return;
